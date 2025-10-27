@@ -6,10 +6,10 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -21,7 +21,8 @@ public class ContactController {
     private ContactServices contactServices;
 
     @RequestMapping("/contact")
-    public String displayContactPage(){
+    public String displayContactPage(Model model) {
+        model.addAttribute("contact", new Contact());
         return "contact.html";
     }
 
@@ -33,6 +34,8 @@ public class ContactController {
             return "contact.html";
         }
         contactServices.saveMessageDetails(contact);
+        contactServices.setCounter(contactServices.getCounter() + 1);
+        log.info("Number of time contact form is submitted: " + contactServices.getCounter());
         return "redirect:/contact";
     }
 

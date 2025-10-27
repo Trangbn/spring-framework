@@ -8,8 +8,8 @@ import org.springframework.web.context.annotation.SessionScope;
 
 @Service
 @Slf4j
-@RequestScope
-//@SessionScope
+//@RequestScope
+@SessionScope
 public class ContactServices {
 
     private int counter = 0;

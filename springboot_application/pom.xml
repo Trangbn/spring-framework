@@ -67,6 +67,11 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-springsecurity6</artifactId> <!-- Or springsecurity5 for older Spring Security versions -->
+            <version>3.1.1.RELEASE</version> <!-- Use the appropriate version for your project -->
+        </dependency>
     </dependencies>
 
     <build>

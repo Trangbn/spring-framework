@@ -29,7 +29,11 @@ public class SecurityConfig {
                 )
 
                 // 🔹 Form Login configuration
-                .formLogin(Customizer.withDefaults())  // For using default spring security login. Else need to define own controller and view
+//                .formLogin(Customizer.withDefaults())  // For using default spring security login. Else need to define own controller and view
+                .formLogin(formLogin -> formLogin
+                        .loginPage("/login")
+                        .permitAll().defaultSuccessUrl("/dashboard", true).failureUrl("/login?error=true").permitAll()
+                )
 
                 // 🔹 Logout configuration
                 .logout(logout -> logout
@@ -38,7 +42,7 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                         .permitAll()
-                )
+                ).httpBasic(Customizer.withDefaults())
 
                 // 🔹 CSRF protection (enabled by default)
                 .csrf(csrf -> csrf.disable());

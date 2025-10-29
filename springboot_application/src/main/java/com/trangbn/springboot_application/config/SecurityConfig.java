@@ -4,6 +4,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -12,18 +18,59 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
 
-        http.csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(requests -> requests.requestMatchers("/", "/home").permitAll()
-                        .requestMatchers("/holidays/**").permitAll()
-                        .requestMatchers("/contact").permitAll()
-                        .requestMatchers("/saveMsg").permitAll()
-                        .requestMatchers("/courses").permitAll()
-                        .requestMatchers("/about").permitAll()
-                        .requestMatchers("/assets/**").permitAll()
-                );
+        http
+                // 🔹 Authorization rules
+                .authorizeHttpRequests(requests -> requests
+                        // Public endpoints
+                        .requestMatchers("/", "/login", "/about", "/contact", "/saveMsg",
+                                "/courses", "/holidays/**", "/assets/**").permitAll()
+                        // Everything else requires authentication
+                        .anyRequest().authenticated()
+                )
 
+                // 🔹 Form Login configuration
+                .formLogin(Customizer.withDefaults())  // For using default spring security login. Else need to define own controller and view
+
+                // 🔹 Logout configuration
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")                 // redirect after logout
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll()
+                )
+
+                // 🔹 CSRF protection (enabled by default)
+                .csrf(csrf -> csrf.disable());
         return http.build();
+    }
 
+    @Bean
+    public UserDetailsService userDetailsService(PasswordEncoder encoder) {
+        UserDetails admin = User.builder()
+                .username("admin")
+                .password(encoder.encode("admin123"))
+                .roles("ADMIN")
+                .build();
+
+        UserDetails student = User.builder()
+                .username("student")
+                .password(encoder.encode("student123"))
+                .roles("STUDENT")
+                .build();
+
+        UserDetails guest = User.builder()
+                .username("guest")
+                .password(encoder.encode("guest123"))
+                .roles("GUEST")
+                .build();
+
+        return new InMemoryUserDetailsManager(admin, student, guest);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
 }

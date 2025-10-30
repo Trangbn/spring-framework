@@ -23,29 +23,27 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests -> requests
                         // Public endpoints
                         .requestMatchers("/", "/login", "/about", "/contact", "/saveMsg",
-                                "/courses", "/holidays/**", "/assets/**").permitAll()
+                                "/courses", "/holidays/**", "/assets/**", "/logout").permitAll()
                         // Everything else requires authentication
                         .anyRequest().authenticated()
                 )
-
                 // 🔹 Form Login configuration
 //                .formLogin(Customizer.withDefaults())  // For using default spring security login. Else need to define own controller and view
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .permitAll().defaultSuccessUrl("/dashboard", true).failureUrl("/login?error=true").permitAll()
                 )
-
                 // 🔹 Logout configuration
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/")                 // redirect after logout
+                        .logoutSuccessUrl("/login?logout=true")                 // redirect after logout
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                         .permitAll()
                 ).httpBasic(Customizer.withDefaults())
 
                 // 🔹 CSRF protection (enabled by default)
-                .csrf(csrf -> csrf.disable());
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/saveMsg"));
         return http.build();
     }
 

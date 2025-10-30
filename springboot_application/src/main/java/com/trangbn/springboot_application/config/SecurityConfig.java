@@ -1,5 +1,6 @@
 package com.trangbn.springboot_application.config;
 
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -17,13 +18,14 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-
+        http.headers(header -> header.frameOptions(frameOptionsConfig -> frameOptionsConfig.disable()));
         http
                 // 🔹 Authorization rules
                 .authorizeHttpRequests(requests -> requests
                         // Public endpoints
                         .requestMatchers("/", "/login", "/about", "/contact", "/saveMsg",
                                 "/courses", "/holidays/**", "/assets/**", "/logout").permitAll()
+                        .requestMatchers( PathRequest.toH2Console()).permitAll()
                         // Everything else requires authentication
                         .anyRequest().authenticated()
                 )
@@ -43,7 +45,7 @@ public class SecurityConfig {
                 ).httpBasic(Customizer.withDefaults())
 
                 // 🔹 CSRF protection (enabled by default)
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/saveMsg"));
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/saveMsg").ignoringRequestMatchers(PathRequest.toH2Console()));
         return http.build();
     }
 

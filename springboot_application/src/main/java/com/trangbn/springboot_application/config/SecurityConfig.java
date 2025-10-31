@@ -44,7 +44,7 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                         .permitAll()
-                ).httpBasic(Customizer.withDefaults())
+                )
 
                 // 🔹 CSRF protection (enabled by default)
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/saveMsg").ignoringRequestMatchers(PathRequest.toH2Console()));

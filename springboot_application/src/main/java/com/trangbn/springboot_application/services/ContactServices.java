@@ -1,10 +1,14 @@
 package com.trangbn.springboot_application.services;
 
+import com.trangbn.springboot_application.constants.SchoolConstant;
 import com.trangbn.springboot_application.model.Contact;
+import com.trangbn.springboot_application.repository.ContactRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.context.annotation.SessionScope;
+
+import java.time.LocalDateTime;
 
 @Service
 @Slf4j
@@ -12,23 +16,19 @@ import org.springframework.web.context.annotation.SessionScope;
 @SessionScope
 public class ContactServices {
 
-    private int counter = 0;
+    @Autowired
+    private ContactRepository contactRepository;
 
     public ContactServices() {
         System.out.println("Contact service bean initialized");
     }
 
     public boolean saveMessageDetails(Contact contact){
-        boolean isSaved=true;
+        contact.setStatus(SchoolConstant.OPEN);
+        contact.setCreatedBy(SchoolConstant.ANONYMOUS);
+        contact.setCreatedAt(LocalDateTime.now());
+        int result = contactRepository.saveContactMsg(contact);
         log.info(contact.toString());
-        return isSaved;
-    }
-
-    public int getCounter() {
-        return counter;
-    }
-
-    public void setCounter(int counter) {
-        this.counter = counter;
+        return result > 0;
     }
 }

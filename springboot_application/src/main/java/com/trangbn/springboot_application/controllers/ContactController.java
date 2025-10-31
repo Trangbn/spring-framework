@@ -5,13 +5,16 @@ import com.trangbn.springboot_application.services.ContactServices;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.net.Authenticator;
 import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -48,5 +51,12 @@ public class ContactController {
         modelAndView.addObject("contactMsgs", contactMsg);
         return modelAndView;
     }
+
+    @RequestMapping(value = "/closeMsg", method = GET)
+    public String closeMessage(@RequestParam int id, Authentication authentication) {
+        contactServices.updateMsgStatus(id, authentication.getName());
+        return "redirect:/displayMessages";
+    }
+
 
 }

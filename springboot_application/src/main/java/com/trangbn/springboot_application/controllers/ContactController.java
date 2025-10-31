@@ -10,7 +10,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
+
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @Controller
@@ -35,6 +39,14 @@ public class ContactController {
         }
         contactServices.saveMessageDetails(contact);
         return "redirect:/contact";
+    }
+
+    @RequestMapping(value = "/displayMessages", method = GET)
+    public ModelAndView displayMessage(Model model) {
+        List<Contact> contactMsg = contactServices.findOpenStatusMessage();
+        ModelAndView modelAndView = new ModelAndView("messages.html");
+        modelAndView.addObject("contactMsgs", contactMsg);
+        return modelAndView;
     }
 
 }

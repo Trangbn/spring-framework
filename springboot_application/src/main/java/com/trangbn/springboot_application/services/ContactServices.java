@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.SessionScope;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -30,5 +31,9 @@ public class ContactServices {
         int result = contactRepository.saveContactMsg(contact);
         log.info(contact.toString());
         return result > 0;
+    }
+
+    public List<Contact> findOpenStatusMessage(){
+        return contactRepository.findOpenStatusMessage(SchoolConstant.OPEN);
     }
 }

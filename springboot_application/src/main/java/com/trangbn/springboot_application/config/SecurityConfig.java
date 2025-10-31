@@ -25,6 +25,8 @@ public class SecurityConfig {
                         // Public endpoints
                         .requestMatchers("/", "/login", "/about", "/contact", "/saveMsg",
                                 "/courses", "/holidays/**", "/assets/**", "/logout").permitAll()
+                        .requestMatchers("/dashboard").authenticated()
+                        .requestMatchers("/displayMessages").hasRole("ADMIN")
                         .requestMatchers( PathRequest.toH2Console()).permitAll()
                         // Everything else requires authentication
                         .anyRequest().authenticated()

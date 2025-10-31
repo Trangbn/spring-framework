@@ -3,20 +3,13 @@ package com.trangbn.springboot_application.model;
 import lombok.Data;
 
 @Data
-public class Holiday {
+public class Holiday extends BaseEntity{
 
-    private final String day;
-    private final String reason;
-    private final Type type;
+    private String day;
+    private String reason;
+    private Type type;
 
-    public enum Type{
+    public enum Type {
         FESTIVAL, FEDERAL
     }
-
-    public Holiday(String day, String reason, Type type) {
-        this.day = day;
-        this.reason = reason;
-        this.type = type;
-    }
-
 }

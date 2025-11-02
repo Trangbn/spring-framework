@@ -17,7 +17,7 @@ public class HolidayRepository {
     }
 
     public List<Holiday> findAllHolidays() {
-        String sql = "SELECT * FROM HOLIDAYS";
+        String sql = "SELECT * FROM holidays";
         // use BeanPropertyRowMapper when model class properties match with table column name in DB
         var rowMapper = BeanPropertyRowMapper.newInstance(Holiday.class);
         return jdbcTemplate.query(sql, rowMapper);

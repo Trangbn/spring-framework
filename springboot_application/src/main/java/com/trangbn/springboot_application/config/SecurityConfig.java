@@ -3,7 +3,6 @@ package com.trangbn.springboot_application.config;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,6 +27,7 @@ public class SecurityConfig {
                         .requestMatchers("/dashboard").authenticated()
                         .requestMatchers("/displayMessages").hasRole("ADMIN")
                         .requestMatchers( PathRequest.toH2Console()).permitAll()
+                        .requestMatchers("/public/**").permitAll()
                         // Everything else requires authentication
                         .anyRequest().authenticated()
                 )
@@ -47,7 +47,7 @@ public class SecurityConfig {
                 )
 
                 // 🔹 CSRF protection (enabled by default)
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/saveMsg").ignoringRequestMatchers(PathRequest.toH2Console()));
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/saveMsg").ignoringRequestMatchers(PathRequest.toH2Console()).ignoringRequestMatchers("/public/**"));
         return http.build();
     }
 

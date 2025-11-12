@@ -25,6 +25,7 @@ public class SecurityConfig {
                         .requestMatchers("/", "/login", "/about", "/contact", "/saveMsg",
                                 "/courses", "/holidays/**", "/assets/**", "/logout").permitAll()
                         .requestMatchers("/dashboard").authenticated()
+                        .requestMatchers("/displayProfile").authenticated()
                         .requestMatchers("/displayMessages").hasRole("ADMIN")
                         .requestMatchers( PathRequest.toH2Console()).permitAll()
                         .requestMatchers("/public/**").permitAll()

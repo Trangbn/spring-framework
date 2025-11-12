@@ -32,7 +32,7 @@ public class UsernamePwdAuthenticationProvider implements AuthenticationProvider
         String password = authentication.getCredentials().toString();
         Person person = personRepository.readByEmail(email);
         if (null != person && person.getPersonId() > 0 && passwordEncoder.matches(password, person.getPwd())) {
-            return new UsernamePasswordAuthenticationToken(person.getName(), null, getGrantedAuthorities(person.getRoles()));
+            return new UsernamePasswordAuthenticationToken(email, null, getGrantedAuthorities(person.getRoles()));
         } else {
             throw new BadCredentialsException("Invalid credential");
         }

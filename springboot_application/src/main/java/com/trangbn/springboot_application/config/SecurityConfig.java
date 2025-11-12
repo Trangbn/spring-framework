@@ -27,6 +27,7 @@ public class SecurityConfig {
                         .requestMatchers("/dashboard").authenticated()
                         .requestMatchers("/displayProfile").authenticated()
                         .requestMatchers("/displayMessages").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers( PathRequest.toH2Console()).permitAll()
                         .requestMatchers("/public/**").permitAll()
                         // Everything else requires authentication

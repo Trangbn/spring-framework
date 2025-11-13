@@ -1,7 +1,9 @@
 package com.trangbn.springboot_application.controllers;
 
+import com.trangbn.springboot_application.model.Courses;
 import com.trangbn.springboot_application.model.Person;
 import com.trangbn.springboot_application.model.SchoolClass;
+import com.trangbn.springboot_application.repository.CourseRepository;
 import com.trangbn.springboot_application.repository.PersonRepository;
 import com.trangbn.springboot_application.repository.SchoolClassRepository;
 import jakarta.servlet.http.HttpSession;
@@ -25,6 +27,9 @@ public class AdminController {
 
     @Autowired
     PersonRepository personRepository;
+
+    @Autowired
+    CourseRepository courseRepository;
 
     @RequestMapping("/displayClasses")
     public ModelAndView displayClasses(Model model) {
@@ -97,4 +102,53 @@ public class AdminController {
         ModelAndView modelAndView = new ModelAndView("redirect:/admin/displayStudents?classId=" + schoolClass.getClassId());
         return modelAndView;
     }
+
+    @GetMapping("/displayCourses")
+    public ModelAndView displayCourses(Model model) {
+        List<Courses> courses = courseRepository.findAll();
+        ModelAndView modelAndView = new ModelAndView("courses_secure.html");
+        modelAndView.addObject("courses", courses);
+        modelAndView.addObject("course", new Courses());
+        return modelAndView;
+    }
+
+    @PostMapping("/addNewCourse")
+    public ModelAndView addNewCourse(@ModelAttribute("course") Courses courses, Model model) {
+        ModelAndView modelAndView = new ModelAndView();
+        courseRepository.save(courses);
+        modelAndView.setViewName("redirect:/admin/displayCourses");
+        return modelAndView;
+    }
+
+    @GetMapping("/viewStudents")
+    public ModelAndView viewStudent(Model model, @RequestParam("id") int id, HttpSession session, @RequestParam(value = "error", required = false) String error) {
+        ModelAndView modelAndView = new ModelAndView("course_students.html");
+        Optional<Courses> courses = courseRepository.findById(id);
+        modelAndView.addObject("courses", courses.get());
+        modelAndView.addObject("person", new Person());
+        session.setAttribute("courses", courses.get());
+        if(error != null){
+            modelAndView.addObject("errorMessage", "Invalid email entered");
+        }
+        return modelAndView;
+    }
+
+    @PostMapping("/addStudentToCourse")
+    public ModelAndView addStudentToCourse(@ModelAttribute("person") Person person, Model model, HttpSession session) {
+        ModelAndView modelAndView = new ModelAndView();
+        Courses courses = (Courses) session.getAttribute("courses");
+        Person personEntity = personRepository.readByEmail(person.getEmail());
+        if (personEntity == null || !(personEntity.getPersonId() > 0)) {
+            modelAndView.setViewName("redirect:/admin/viewStudents?id=" + courses.getCourseId() + "&error=true");
+            return modelAndView;
+        }
+
+        personEntity.getCourses().add(courses);
+        courses.getPersons().add(personEntity);
+        personRepository.save(personEntity);
+        session.setAttribute("courses", courses);
+        modelAndView.setViewName("redirect:/admin/viewStudents?id=" + courses.getCourseId());
+        return modelAndView;
+    }
+
 }

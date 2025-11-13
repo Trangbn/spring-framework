@@ -9,6 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Set;
 
+
+// @Data will generate toString() method which cause StackOverFlow error when use with JPA mapping (E.g One-To-Many, One-One ..)
+// This case use @Getter, Setter instead ( avoid using @Data)
 @Slf4j
 @Entity
 @Table(name="class")

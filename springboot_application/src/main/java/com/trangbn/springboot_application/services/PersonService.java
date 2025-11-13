@@ -23,7 +23,7 @@ public class PersonService {
     private PasswordEncoder passwordEncoder;
 
     public boolean createNewPerson(Person person){
-        Roles role = rolesRepository.getByRoleName(SchoolConstant.ADMIN_ROLE);
+        Roles role = rolesRepository.getByRoleName(SchoolConstant.STUDENT_ROLE);
         person.setRoles(role);
         person.setPwd(passwordEncoder.encode(person.getPwd()));
         Person savedPerson  = personRepository.save(person);

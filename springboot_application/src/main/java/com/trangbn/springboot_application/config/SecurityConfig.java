@@ -34,7 +34,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 // 🔹 Form Login configuration
-//                .formLogin(Customizer.withDefaults())  // For using default spring security login. Else need to define own controller and view
+                //.formLogin(Customizer.withDefaults())  // For using default spring security login. Else need to define own controller and view
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .permitAll().defaultSuccessUrl("/dashboard", true).failureUrl("/login?error=true").permitAll()
@@ -42,7 +42,7 @@ public class SecurityConfig {
                 // 🔹 Logout configuration
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout=true")                 // redirect after logout
+                        .logoutSuccessUrl("/login?logout=true")   // redirect after logout
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                         .permitAll()
@@ -53,28 +53,28 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public UserDetailsService userDetailsService(PasswordEncoder encoder) {
-        UserDetails admin = User.builder()
-                .username("admin")
-                .password(encoder.encode("admin123"))
-                .roles("ADMIN")
-                .build();
-
-        UserDetails student = User.builder()
-                .username("student")
-                .password(encoder.encode("student123"))
-                .roles("STUDENT")
-                .build();
-
-        UserDetails guest = User.builder()
-                .username("guest")
-                .password(encoder.encode("guest123"))
-                .roles("GUEST")
-                .build();
-
-        return new InMemoryUserDetailsManager(admin, student, guest);
-    }
+//    @Bean
+//    public UserDetailsService userDetailsService(PasswordEncoder encoder) {
+//        UserDetails admin = User.builder()
+//                .username("admin")
+//                .password(encoder.encode("admin123"))
+//                .roles("ADMIN")
+//                .build();
+//
+//        UserDetails student = User.builder()
+//                .username("student")
+//                .password(encoder.encode("student123"))
+//                .roles("STUDENT")
+//                .build();
+//
+//        UserDetails guest = User.builder()
+//                .username("guest")
+//                .password(encoder.encode("guest123"))
+//                .roles("GUEST")
+//                .build();
+//
+//        return new InMemoryUserDetailsManager(admin, student, guest);
+//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

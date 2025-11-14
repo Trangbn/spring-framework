@@ -5,11 +5,13 @@ import com.trangbn.springboot_application.services.ContactServices;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -44,11 +46,18 @@ public class ContactController {
         return "redirect:/contact";
     }
 
-    @RequestMapping(value = "/displayMessages", method = GET)
-    public ModelAndView displayMessage(Model model) {
-        List<Contact> contactMsg = contactServices.findOpenStatusMessage();
+    @RequestMapping(value = "/displayMessages/page/{pageNum}", method = GET)
+    public ModelAndView displayMessage(Model model, @PathVariable(value = "pageNum", required = false) int pageNum, @RequestParam(value = "sortField", required = false) String sortBy, @RequestParam(value = "sortDir", required = true) String direction) {
+        Page<Contact> msgsWithOpenStatus = contactServices.findMsgsWithOpenStatus(pageNum, sortBy, direction);
+        List<Contact> contactMsgs = msgsWithOpenStatus.getContent();
         ModelAndView modelAndView = new ModelAndView("messages.html");
-        modelAndView.addObject("contactMsgs", contactMsg);
+        model.addAttribute("currentPage", pageNum);
+        model.addAttribute("totalPages", msgsWithOpenStatus.getTotalPages());
+        model.addAttribute("totalMsgs", msgsWithOpenStatus.getTotalElements());
+        model.addAttribute("sortField", sortBy);
+        model.addAttribute("sortDir", direction);
+        model.addAttribute("reverseSortDir", direction.equals("asc") ? "desc" : "asc");
+        modelAndView.addObject("contactMsgs", contactMsgs);
         return modelAndView;
     }
 

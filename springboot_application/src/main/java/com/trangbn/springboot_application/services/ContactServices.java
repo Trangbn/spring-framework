@@ -49,11 +49,11 @@ public class ContactServices {
         Pageable pageable = PageRequest.of(pageNum - 1, pageSize,
                 sortDir.equals("asc") ? Sort.by(sortField).ascending()
                         : Sort.by(sortField).descending());
-        Page<Contact> msgPage = contactRepository.findByStatus(SchoolConstant.OPEN, pageable);
+        Page<Contact> msgPage = contactRepository.findOpenMsgs(SchoolConstant.OPEN, pageable);
         return msgPage;
     }
 
-    public boolean updateMsgStatus(int contactId){
+    public boolean updateMsgStatus(int contactId) {
 
         Optional<Contact> contact = contactRepository.findById(contactId);
         contact.ifPresent(contact1 -> {
@@ -66,7 +66,7 @@ public class ContactServices {
     }
 
     public boolean updateStatusById(int contactId){
-        int rows = contactRepository.updateStatusById(SchoolConstant.CLOSE, contactId);
+        int rows = contactRepository.updateMsgStatus(SchoolConstant.CLOSE, contactId);
         return rows > 0;
     }
 }

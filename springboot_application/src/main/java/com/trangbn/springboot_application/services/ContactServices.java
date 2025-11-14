@@ -64,4 +64,9 @@ public class ContactServices {
         Contact updatedContact = contactRepository.save(contact.get());
         return updatedContact.getUpdatedBy() != null;
     }
+
+    public boolean updateStatusById(int contactId){
+        int rows = contactRepository.updateStatusById(SchoolConstant.CLOSE, contactId);
+        return rows > 0;
+    }
 }

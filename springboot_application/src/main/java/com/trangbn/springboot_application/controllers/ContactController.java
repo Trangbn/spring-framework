@@ -63,9 +63,8 @@ public class ContactController {
 
     @RequestMapping(value = "/closeMsg", method = GET)
     public String closeMessage(@RequestParam int id) {
-        contactServices.updateMsgStatus(id);
-        return "redirect:/displayMessages";
+        contactServices.updateStatusById(id);
+        return "redirect:/displayMessages/page/1?sortField=name&sortDir=desc";
     }
-
 
 }

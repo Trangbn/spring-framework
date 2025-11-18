@@ -3,6 +3,7 @@ package com.trangbn.springboot_application.config;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,6 +27,7 @@ public class SecurityConfig {
                                 "/courses", "/holidays/**", "/assets/**", "/logout").permitAll()
                         .requestMatchers("/dashboard").authenticated()
                         .requestMatchers("/displayProfile").authenticated()
+                        .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/displayMessages").hasRole("ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/student/**").hasRole("STUDENT")
@@ -47,7 +49,7 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                         .permitAll()
-                )
+                ).httpBasic(Customizer.withDefaults())
 
                 // 🔹 CSRF protection (enabled by default)
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/saveMsg").ignoringRequestMatchers(PathRequest.toH2Console()).ignoringRequestMatchers("/public/**"));

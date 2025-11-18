@@ -23,14 +23,7 @@ public class ContactRestController {
         return contactRepository.findByStatus(status);
     }
 
-/* <<<<<<<<<<<<<<  ✨ Windsurf Command ⭐ >>>>>>>>>>>>>>>> */
-    /**
-     * Retrieve all messages by a given status.
-     *
-     * @param contact the contact object with the status to be searched.
-     * @return a list of contact objects with the given status.
-     */
-/* <<<<<<<<<<  9095cb44-4bee-47a0-ae33-d46d8bd017a1  >>>>>>>>>>> */
+
     @GetMapping("/getAllMsgsByStatus")
     @ResponseBody
     public List<Contact> getAllMsgsByStatus(@RequestBody Contact contact) {

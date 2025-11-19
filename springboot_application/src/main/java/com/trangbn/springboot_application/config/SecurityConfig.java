@@ -23,7 +23,7 @@ public class SecurityConfig {
                 // 🔹 Authorization rules
                 .authorizeHttpRequests(requests -> requests
                         // Public endpoints
-                        .requestMatchers("/", "/login", "/about", "/contact", "/saveMsg",
+                        .requestMatchers("/", "/login", "/about", "/contact",
                                 "/courses", "/holidays/**", "/assets/**", "/logout").permitAll()
                         .requestMatchers("/dashboard").authenticated()
                         .requestMatchers("/displayProfile").authenticated()
@@ -52,7 +52,7 @@ public class SecurityConfig {
                 ).httpBasic(Customizer.withDefaults())
 
                 // 🔹 CSRF protection (enabled by default)
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/saveMsg").ignoringRequestMatchers(PathRequest.toH2Console()).ignoringRequestMatchers("/public/**"));
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**").ignoringRequestMatchers(PathRequest.toH2Console()).ignoringRequestMatchers("/public/**"));
         return http.build();
     }
 

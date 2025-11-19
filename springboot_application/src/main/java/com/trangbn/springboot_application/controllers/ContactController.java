@@ -35,16 +35,16 @@ public class ContactController {
         return "contact.html";
     }
 
-    @RequestMapping(value = "/saveMsg", method = POST)
-    public String saveMessage(@Valid @ModelAttribute("contact") Contact contact, Errors errors){
-
-        if (errors.hasErrors()) {
-            log.error("Contact form validation failed due to : " + errors.toString());
-            return "contact.html";
-        }
-        contactServices.saveMessageDetails(contact);
-        return "redirect:/contact";
-    }
+//    @RequestMapping(value = "/saveMsg", method = POST)
+//    public String saveMessage(@Valid @ModelAttribute("contact") Contact contact, Errors errors){
+//
+//        if (errors.hasErrors()) {
+//            log.error("Contact form validation failed due to : " + errors.toString());
+//            return "contact.html";
+//        }
+//        contactServices.saveMessageDetails(contact);
+//        return "redirect:/contact";
+//    }
 
     @RequestMapping(value = "/displayMessages/page/{pageNum}", method = GET)
     public ModelAndView displayMessage(Model model, @PathVariable(value = "pageNum", required = false) int pageNum, @RequestParam(value = "sortField", required = false) String sortBy, @RequestParam(value = "sortDir", required = true) String direction) {

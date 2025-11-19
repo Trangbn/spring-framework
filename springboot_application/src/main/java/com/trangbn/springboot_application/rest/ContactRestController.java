@@ -1,16 +1,19 @@
 package com.trangbn.springboot_application.rest;
 
 import com.trangbn.springboot_application.model.Contact;
+import com.trangbn.springboot_application.model.Response;
 import com.trangbn.springboot_application.repository.ContactRepository;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @Slf4j
-@Controller
+@RestController
 @RequestMapping("/api/contact")
 public class ContactRestController {
 
@@ -18,14 +21,13 @@ public class ContactRestController {
     ContactRepository contactRepository;
 
     @GetMapping("/getMessagesByStatus")
-    @ResponseBody
+//    @ResponseBody
     public List<Contact> getMessagesByStatus(@RequestParam("status") String status) {
         return contactRepository.findByStatus(status);
     }
 
-
     @GetMapping("/getAllMsgsByStatus")
-    @ResponseBody
+//    @ResponseBody
     public List<Contact> getAllMsgsByStatus(@RequestBody Contact contact) {
 
         if (null != contact && null != contact.getStatus()) {
@@ -34,4 +36,19 @@ public class ContactRestController {
             return List.of();
         }
     }
+
+    @PostMapping("/saveMessage")
+    public ResponseEntity<Response> saveMsg(
+            @RequestHeader("invocationFrom") String invocationFrom,
+            @Valid @RequestBody Contact contact) {
+        log.info(String.format("Header invocationFrom = %s", invocationFrom));
+        contactRepository.save(contact);
+        Response response = new Response();
+        response.setStatusMsg("200");
+        response.setStatusMsg("Message saved successfully");
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .header("isMsgSaved", "true")
+                .body(response);
+    }
+
 }

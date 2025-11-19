@@ -6,11 +6,14 @@ import com.trangbn.springboot_application.repository.ContactRepository;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -44,11 +47,24 @@ public class ContactRestController {
         log.info(String.format("Header invocationFrom = %s", invocationFrom));
         contactRepository.save(contact);
         Response response = new Response();
-        response.setStatusMsg("200");
+        response.setStatusCode("200");
         response.setStatusMsg("Message saved successfully");
         return ResponseEntity.status(HttpStatus.CREATED)
                 .header("isMsgSaved", "true")
                 .body(response);
     }
 
+    @DeleteMapping("/deleteMessage")
+    public ResponseEntity<Response> deleteMsg(RequestEntity<Contact> requestEntity){
+        HttpHeaders headers = requestEntity.getHeaders();
+        headers.forEach((k,v) -> {
+            log.info(String.format("Header '%s' = %s", k, v.stream().collect(Collectors.joining("|"))));
+        });
+        Contact body = requestEntity.getBody();
+        contactRepository.deleteById(body.getContactId());
+        Response response = new Response();
+        response.setStatusCode("200");
+        response.setStatusMsg("Message deleted successfully");
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }

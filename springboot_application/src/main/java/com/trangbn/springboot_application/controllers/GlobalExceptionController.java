@@ -14,7 +14,6 @@ as an interceptor of exceptions thrown by methods annotated with @RequestMapping
 * */
 @Slf4j
 @ControllerAdvice(annotations = Controller.class)
-@Order(2)
 public class GlobalExceptionController {
 
     /*

@@ -18,41 +18,68 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.headers(header -> header.frameOptions(frameOptionsConfig -> frameOptionsConfig.disable()));
-        http
-                // 🔹 Authorization rules
-                .authorizeHttpRequests(requests -> requests
-                        // Public endpoints
-                        .requestMatchers("/", "/login", "/about", "/contact",
-                                "/courses", "/holidays/**", "/assets/**", "/logout").permitAll()
-                        .requestMatchers("/dashboard").authenticated()
-                        .requestMatchers("/displayProfile").authenticated()
-                        .requestMatchers("/api/**").authenticated()
-                        .requestMatchers("/displayMessages").hasRole("ADMIN")
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/student/**").hasRole("STUDENT")
-                        .requestMatchers( PathRequest.toH2Console()).permitAll()
-                        .requestMatchers("/public/**").permitAll()
-                        // Everything else requires authentication
-                        .anyRequest().authenticated()
-                )
-                // 🔹 Form Login configuration
-                //.formLogin(Customizer.withDefaults())  // For using default spring security login. Else need to define own controller and view
-                .formLogin(formLogin -> formLogin
-                        .loginPage("/login")
-                        .permitAll().defaultSuccessUrl("/dashboard", true).failureUrl("/login?error=true").permitAll()
-                )
-                // 🔹 Logout configuration
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout=true")   // redirect after logout
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
-                        .permitAll()
-                ).httpBasic(Customizer.withDefaults())
 
-                // 🔹 CSRF protection (enabled by default)
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**").ignoringRequestMatchers(PathRequest.toH2Console()).ignoringRequestMatchers("/public/**"));
+        http.csrf((csrf) -> csrf.ignoringRequestMatchers("/saveMsg").ignoringRequestMatchers("/public/**")
+                        .ignoringRequestMatchers("/api/**"))
+                .authorizeHttpRequests((requests) -> requests.requestMatchers("/dashboard").authenticated()
+                        .requestMatchers("/displayMessages/**").hasRole("ADMIN")
+                        .requestMatchers("/closeMsg/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/**").authenticated()
+                        .requestMatchers("/displayProfile").authenticated()
+                        .requestMatchers("/updateProfile").authenticated()
+                        .requestMatchers("/student/**").hasRole("STUDENT")
+                        .requestMatchers("/", "/home").permitAll()
+                        .requestMatchers("/holidays/**").permitAll()
+                        .requestMatchers("/contact").permitAll()
+                        .requestMatchers("/saveMsg").permitAll()
+                        .requestMatchers("/courses").permitAll()
+                        .requestMatchers("/about").permitAll()
+                        .requestMatchers("/assets/**").permitAll()
+                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/logout").permitAll()
+                        .requestMatchers("/public/**").permitAll())
+                .formLogin(loginConfigurer -> loginConfigurer.loginPage("/login")
+                        .defaultSuccessUrl("/dashboard").failureUrl("/login?error=true").permitAll())
+                .logout(logoutConfigurer -> logoutConfigurer.logoutSuccessUrl("/login?logout=true")
+                        .invalidateHttpSession(true).permitAll())
+                .httpBasic(Customizer.withDefaults());
+
+//        http.headers(header -> header.frameOptions(frameOptionsConfig -> frameOptionsConfig.disable()));
+//        http
+//                // 🔹 Authorization rules
+//                .authorizeHttpRequests(requests -> requestsz
+//                        // Public endpoints
+//                        .requestMatchers("/", "/login", "/about", "/contact",
+//                                "/courses", "/holidays/**", "/assets/**", "/logout").permitAll()
+//                        .requestMatchers("/dashboard").authenticated()
+//                        .requestMatchers("/displayProfile").authenticated()
+//                        .requestMatchers("/api/**").authenticated()
+//                        .requestMatchers("/displayMessages").hasRole("ADMIN")
+//                        .requestMatchers("/admin/**").hasRole("ADMIN")
+//                        .requestMatchers("/student/**").hasRole("STUDENT")
+//                        .requestMatchers( PathRequest.toH2Console()).permitAll()
+//                        .requestMatchers("/public/**").permitAll()
+//                        // Everything else requires authentication
+//                        .anyRequest().authenticated()
+//                )
+//                // 🔹 Form Login configuration
+//                //.formLogin(Customizer.withDefaults())  // For using default spring security login. Else need to define own controller and view
+//                .formLogin(formLogin -> formLogin
+//                        .loginPage("/login")
+//                        .permitAll().defaultSuccessUrl("/dashboard", true).failureUrl("/login?error=true").permitAll()
+//                )
+//                // 🔹 Logout configuration
+//                .logout(logout -> logout
+//                        .logoutUrl("/logout")
+//                        .logoutSuccessUrl("/login?logout=true")   // redirect after logout
+//                        .invalidateHttpSession(true)
+//                        .deleteCookies("JSESSIONID")
+//                        .permitAll()
+//                ).httpBasic(Customizer.withDefaults())
+//
+//                // 🔹 CSRF protection (enabled by default)
+//                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**").ignoringRequestMatchers(PathRequest.toH2Console()).ignoringRequestMatchers("/public/**"));
         return http.build();
     }
 

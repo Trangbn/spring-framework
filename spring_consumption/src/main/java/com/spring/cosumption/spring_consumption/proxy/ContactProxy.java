@@ -14,6 +14,6 @@ import java.util.List;
 public interface ContactProxy {
 
     @RequestMapping(method = RequestMethod.GET, value = "/getMessagesByStatus")
-    @Headers(value = "Content-Type: application/json")
+//    @Headers(value = "Content-Type: application/json")
     List<Contact> getMessagesByStatus(@RequestParam("status") String status);
 }

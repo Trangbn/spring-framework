@@ -25,7 +25,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests -> requests
                         // Public endpoints
                         .requestMatchers("/", "/login", "/about", "/contact",
-                                "/courses", "/holidays/**", "/assets/**", "/logout").permitAll()
+                                "/courses", "/holidays/**", "/assets/**", "/logout", "/profile/**").permitAll()
                         .requestMatchers("/dashboard").authenticated()
                         .requestMatchers("/displayProfile").authenticated()
                         .requestMatchers("/api/**").authenticated()

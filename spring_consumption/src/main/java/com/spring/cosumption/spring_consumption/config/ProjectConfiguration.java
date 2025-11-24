@@ -32,7 +32,7 @@ public class ProjectConfiguration {
 
     @Bean
     public WebClient webClient(){
-        return WebClient.builder().filter(ExchangeFilterFunctions.basicAuthentication("trangbn580@gmail.com", "123456789")).build();
+        return WebClient.builder().filter(ExchangeFilterFunctions.basicAuthentication("trangbn580@gmail.com", "123456")).build();
     }
 
 }

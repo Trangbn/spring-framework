@@ -25,12 +25,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests -> requests
                         // Public endpoints
                         .requestMatchers("/", "/login", "/about", "/contact",
-                                "/courses", "/holidays/**", "/assets/**", "/logout", "/profile/**").permitAll()
+                                "/courses", "/holidays/**", "/assets/**", "/logout").permitAll()
                         .requestMatchers("/dashboard").authenticated()
                         .requestMatchers("/displayProfile").authenticated()
                         .requestMatchers("/api/**").authenticated()
+                        .requestMatchers("/data-api/**").authenticated()
                         .requestMatchers("/displayMessages").hasRole("ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+//                        .requestMatchers("/data-api/**").permitAll()
                         .requestMatchers("/student/**").hasRole("STUDENT")
                         .requestMatchers( PathRequest.toH2Console()).permitAll()
                         .requestMatchers("/public/**").permitAll()
@@ -53,7 +55,7 @@ public class SecurityConfig {
                 ).httpBasic(Customizer.withDefaults())
 
                 // 🔹 CSRF protection (enabled by default)
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**").ignoringRequestMatchers(PathRequest.toH2Console()).ignoringRequestMatchers("/public/**"));
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**").ignoringRequestMatchers("/data-api/**").ignoringRequestMatchers(PathRequest.toH2Console()).ignoringRequestMatchers("/public/**"));
         return http.build();
     }
 
